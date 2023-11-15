@@ -1,0 +1,35 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: backend-run-first
+  namespace: windy-journey
+  finalizers:
+    - chains.tekton.dev/pipelinerun
+  labels:
+    tekton.dev/pipeline: windy-journey
+spec:
+  params:
+    - name: IMAGE_TAG
+      value: 1.0.0
+    - name: IMAGE_NAME
+      value: quay.io/wvi/backend
+    - name: GIT_REPO
+      value: 'https://github.com/sa-mw-dach/windy-journey.git'
+    - name: GIT_BRANCH
+      value: main
+    - name: CONTEXT_DIR
+      value: apps-src/backend   
+  pipelineRef:
+    name: windy-journey
+  serviceAccountName: pipeline
+  timeouts:
+    pipeline: 1h0m0s
+  workspaces:
+    - name: workspace
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
