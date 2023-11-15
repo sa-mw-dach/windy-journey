@@ -1,0 +1,9 @@
+train: data/wind-turbine/train/images
+val: data/wind-turbine/valid/images
+nc: 2
+# names: ['dirt', 'damage']
+
+# Classes
+names:
+  0: dirt
+  1: damage
