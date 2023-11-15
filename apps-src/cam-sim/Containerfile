@@ -1,0 +1,17 @@
+FROM registry.access.redhat.com/ubi8/ubi
+
+RUN yum install -y python3; yum clean all
+RUN python3 -m pip install --upgrade pip
+
+WORKDIR /app
+COPY ./ /app/
+
+RUN python3 -m pip install -r requirements.txt
+RUN curl -LO https://github.com/sa-mw-dach/windy-journey/releases/download/v0.0.0/annotated-wind-turbine-surface-damage-200.tar.gz && \
+    mkdir data && \
+    tar zxf annotated-wind-turbine-surface-damage-200.tar.gz -C data && \
+    rm -f annotated-wind-turbine-surface-damage-200.tar.gz
+
+EXPOSE 8088
+ENTRYPOINT ["python3"]
+CMD ["client.py", "-l", "INFO", "--fps", "0.5", "--scale", "0.5", "--images",  "--path", "data/wind-turbine"]
