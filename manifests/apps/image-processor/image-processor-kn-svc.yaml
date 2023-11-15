@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: image-processor-conf
+data:
+  INFER_URL: "https://manu-manu-vi.apps.cluster-69ncl.69ncl.sandbox392.opentlc.com/v2/models/manu/infer"
+---
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: image-processor
+  labels:
+    app: windy-journey
+    app.kubernetes.io/part-of: windy-journey
+    app.openshift.io/runtime: python
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
+        # autoscaling.knative.dev/target: '100'
+        # autoscaling.knative.dev/targetUtilizationPercentage: '70'
+        # autoscaling.knative.dev/window: 60s
+      labels:
+        app.kubernetes.io/component: image-processor
+        app.kubernetes.io/instance: image-processor
+        app.kubernetes.io/part-of: strimzi-manu-vi
+        app.openshift.io/runtime: python
+        app.openshift.io/runtime-namespace: windy-journey
+        app.openshift.io/runtime-version: latest
+    spec:
+      containerConcurrency: 0
+      containers:
+        - name: image-processor
+          image: quay.io/wvi/image-processor:1.0.0
+#          image: image-processor:cpu
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 8080
+          envFrom:
+          - configMapRef:
+              name: image-processor-conf
+          resources: {}
+      enableServiceLinks: false
+      timeoutSeconds: 30
+  traffic:
+    - latestRevision: true
+      percent: 100
