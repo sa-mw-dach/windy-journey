@@ -1,0 +1,13 @@
+kind: KafkaTopic
+apiVersion: kafka.strimzi.io/v1beta2
+metadata:
+  name: visual-inspection-images
+  labels:
+    strimzi.io/cluster: wvi
+  namespace: windy-journey
+spec:
+  partitions: 5
+  replicas: 2
+  config:
+    retention.ms: 60000
+    segment.bytes: 1073741824
