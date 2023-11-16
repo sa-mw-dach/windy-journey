@@ -27,6 +27,10 @@ This section describes the installation of the runtime on OpenShift. The model t
 
 This installation section describes only the configuration of kafka. The installation is finalized as part of the [Runtime Workshop](../../docs/04-workshop-runtime.md) in the following section.
 
+
+> **Note: Either follow the instructions below, or run the `install.sh` script.**
+
+
 If not already done, please clone this repository:
 
 ```
