@@ -1,0 +1,65 @@
+name: Build&Push Release
+on:
+  push:
+    branches: [release]
+    paths-ignore:
+      - '**/README.md'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-push-ghrc:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: release
+          submodules: recursive
+          fetch-depth: 0
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Set release version
+        run: |
+          VER=$(cat pubspec.yaml | grep -o "version:[^:]*" | cut -f 2 -d ":" | cut -f 1 -d "+" | xargs)
+          echo "APP_VERSION=$VER" >> $GITHUB_ENV
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+          labels: |
+            org.opencontainers.image.title=manuela-visual-inspection-ui
+            org.opencontainers.image.description=WebApp for the Manuela Visual Inspection Demo
+            org.opencontainers.image.vendor=Kounex
+          tags: |
+            type=semver,pattern={{version}},value=${{ env.APP_VERSION }},priority=50
+            type=ref,event=branch
+            type=raw,value=latest
+            type=sha
+      - name: GHRC login
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          file: Containerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.APP_VERSION }}
+          release_name: ${{ env.APP_VERSION }}

@@ -1,0 +1,16 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: manuela-visual-inspection-ui
+  namespace: manuela-visual-inspection
+  labels:
+    app: manuela-visual-inspection-ui
+    app.kubernetes.io/part-of: manuela-visual-inspection
+spec:
+  to:
+    kind: Service
+    name: manuela-visual-inspection-ui
+    weight: 100
+  port:
+    targetPort: http
+  wildcardPolicy: None
