@@ -1,0 +1,29 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: dashboard-flutter-backend
+  namespace: manuela-visual-inspection
+  labels:
+    app: manuela-visual-inspection-backend
+    app.kubernetes.io/part-of: manuela-visual-inspection
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'manuela-visual-inspection-backend:latest'
+  resources: {}
+  successfulBuildsHistoryLimit: 3
+  failedBuildsHistoryLimit: 3
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Containerfile
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/Kounex/manuela-visual-inspection-backend'
+  triggers:
+    - type: ConfigChange
+  runPolicy: Serial

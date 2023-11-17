@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: manuela-visual-inspection
+
+resources:
+  - build-config.yaml
+  - image-stream.yaml
+
+  - service.yaml
+  - route.yaml
+  - service-account.yaml
+  - deployment.yaml

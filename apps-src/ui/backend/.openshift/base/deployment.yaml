@@ -1,0 +1,54 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  annotations:
+  name: manuela-visual-inspection-backend
+  namespace: manuela-visual-inspection
+  labels:
+    app: manuela-visual-inspection-backend
+    app.kubernetes.io/part-of: manuela-visual-inspection
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: manuela-visual-inspection-backend
+      app.kubernetes.io/part-of: manuela-visual-inspection
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: manuela-visual-inspection-backend
+        app.kubernetes.io/part-of: manuela-visual-inspection
+    spec:
+      automountServiceAccountToken: true
+      containers:
+        - name: manuela-visual-inspection-backend
+          image: manuela-visual-inspection-backend:latest
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 8888
+              protocol: TCP
+          env:
+            - name: UI_URL
+              value: >-
+                http://manuela-visual-inspection-ui-manuela-visual-inspection.apps.ocp5.stormshift.coe.muc.redhat.com
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      securityContext: {}
+      schedulerName: default-scheduler
+      serviceAccount: manuela-visual-inspection-backend
+      serviceAccountName: manuela-visual-inspection-backend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

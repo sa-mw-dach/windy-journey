@@ -1,0 +1,11 @@
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  name: manuela-visual-inspection-backend
+  namespace: manuela-visual-inspection
+  labels:
+    app: manuela-visual-inspection-backend
+    app.kubernetes.io/part-of: manuela-visual-inspection
+spec:
+  lookupPolicy:
+    local: true

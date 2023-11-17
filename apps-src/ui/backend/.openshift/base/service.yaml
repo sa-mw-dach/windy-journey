@@ -1,0 +1,26 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: manuela-visual-inspection-backend
+  namespace: manuela-visual-inspection
+  labels:
+    app: manuela-visual-inspection-backend
+    app.kubernetes.io/part-of: manuela-visual-inspection
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: web
+      protocol: TCP
+      port: 8888
+      targetPort: 8888
+    - name: cloudevents
+      protocol: TCP
+      port: 80
+      targetPort: 8888
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: manuela-visual-inspection-backend
