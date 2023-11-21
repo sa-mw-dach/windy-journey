@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: manuela-visual-inspection
+namespace: windy-journey
 
 resources:
   - config-map.yaml

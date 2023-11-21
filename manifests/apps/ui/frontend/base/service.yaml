@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: manuela-visual-inspection-ui
-  namespace: manuela-visual-inspection-ui
+  name: windy-journey-ui
+  namespace: windy-journey-ui
   labels:
-    app: manuela-visual-inspection-ui
-    app.kubernetes.io/part-of: manuela-visual-inspection
+    app: windy-journey-ui
+    app.kubernetes.io/part-of: windy-journey
 spec:
   ipFamilies:
     - IPv4
@@ -27,4 +27,4 @@ spec:
   ipFamilyPolicy: SingleStack
   sessionAffinity: None
   selector:
-    app: manuela-visual-inspection-ui
+    app: windy-journey-ui

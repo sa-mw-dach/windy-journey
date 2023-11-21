@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: manuela-visual-inspection
+namespace: windy-journey
 
 bases:
   - ../../base
@@ -10,8 +10,8 @@ patchesJson6902:
   - target:
       version: v1
       kind: ConfigMap
-      name: manuela-visual-inspection-ui-config
+      name: windy-journey-ui-config
     patch: |-
       - op: replace
         path: /data/config
-        value: API_URL=manuela-visual-inspection-ui.apps.ocp5.stormshift.coe.muc.redhat.com
+        value: API_URL=http://windy-journey-backend-windy-journey.apps.ocp5.stormshift.coe.muc.redhat.com

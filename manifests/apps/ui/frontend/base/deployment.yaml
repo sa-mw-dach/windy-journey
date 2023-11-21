@@ -1,28 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: manuela-visual-inspection-ui
-  namespace: manuela-visual-inspection-ui
+  name: windy-journey-ui
+  namespace: windy-journey-ui
   labels:
-    app: manuela-visual-inspection-ui
-    app.kubernetes.io/part-of: manuela-visual-inspection
+    app: windy-journey-ui
+    app.kubernetes.io/part-of: windy-journey
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/instance: manuela-visual-inspection-ui
-      app.kubernetes.io/name: manuela-visual-inspection-ui
+      app: windy-journey-ui
+      app.kubernetes.io/part-of: windy-journey
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: manuela-visual-inspection-ui
-        app.kubernetes.io/part-of: manuela-visual-inspection
+        app: windy-journey-ui
+        app.kubernetes.io/part-of: windy-journey
+    spec:
       automountServiceAccountToken: true
       containers:
-        - name: manuela-visual-inspection-ui
-          image: manuela-visual-inspection-ui:latest
+        - name: windy-journey-ui
+          image: quay.io/wvi/ui-frontend:1.0.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
@@ -60,11 +61,11 @@ spec:
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
-      serviceAccount: manuela-visual-inspection-ui
-      serviceAccountName: manuela-visual-inspection-ui
+      serviceAccount: windy-journey-ui
+      serviceAccountName: windy-journey-ui
       terminationGracePeriodSeconds: 30
       volumes:
         - configMap:
             defaultMode: 420
-            name: manuela-visual-inspection-ui-config
+            name: windy-journey-ui-config
           name: config

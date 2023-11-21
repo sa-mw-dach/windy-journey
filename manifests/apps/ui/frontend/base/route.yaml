@@ -1,15 +1,15 @@
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: manuela-visual-inspection-ui
-  namespace: manuela-visual-inspection
+  name: windy-journey-ui
+  namespace: windy-journey
   labels:
-    app: manuela-visual-inspection-ui
-    app.kubernetes.io/part-of: manuela-visual-inspection
+    app: windy-journey-ui
+    app.kubernetes.io/part-of: windy-journey
 spec:
   to:
     kind: Service
-    name: manuela-visual-inspection-ui
+    name: windy-journey-ui
     weight: 100
   port:
     targetPort: http
