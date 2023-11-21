@@ -297,7 +297,7 @@ if __name__ == "__main__":
 
     if send_kafka:
 
-        topic = args.topic
+        # topic = args.topic
         
         if security_protocol == "PLAINTEXT":
             if args.ssl:
