@@ -9,9 +9,9 @@ bases:
 patchesJson6902:
   - target:
       version: v1
-      kind: Route
-      name: manuela-visual-inspection-ui
+      kind: ConfigMap
+      name: manuela-visual-inspection-ui-config
     patch: |-
       - op: replace
-        path: /spec/host
-        value: manuela-visual-inspection-ui.apps.ocp5.stormshift.coe.muc.redhat.com
+        path: /data/config
+        value: API_URL=manuela-visual-inspection-ui.apps.ocp5.stormshift.coe.muc.redhat.com
