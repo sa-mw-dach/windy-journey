@@ -1,0 +1,8 @@
+apiVersion: eventing.knative.dev/v1
+kind: Broker
+metadata:
+  name: default
+  namespace: windy-journey
+  labels:
+    app.kubernetes.io/part-of: windy-journey
+spec: {}
