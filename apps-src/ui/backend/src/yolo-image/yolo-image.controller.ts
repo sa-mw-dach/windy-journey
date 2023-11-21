@@ -11,8 +11,8 @@ export class YOLOImageController {
     @Header('Cache-Control', 'none')
     @Header('Ce-Id', 'UUID')
     @Header('Ce-specversion', '1.0')
-    @Header('Ce-Source', 'manuela/eventing/image-processor')
-    @Header('Ce-Type', 'manuela.image-processor.response')
+    @Header('Ce-Source', 'wvi/eventing/image-processor')
+    @Header('Ce-Type', 'wvi.image-processor.response')
     public receiveAIImage(@Body() yoloImage: YOLOImage) {
         console.log(`Received Image: ${yoloImage.id}`);
 
