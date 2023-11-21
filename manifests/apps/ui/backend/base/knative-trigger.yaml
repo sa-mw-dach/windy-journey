@@ -1,0 +1,16 @@
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: windy-journey-backend
+  namespace: windy-journey
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: wvi.image-processor.response
+  subscriber:
+    ref:
+      apiVersion: v1
+      kind: Service
+      name: windy-journey-backend
+      namespace: windy-journey

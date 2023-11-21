@@ -8,3 +8,4 @@ resources:
   - route.yaml
   - service-account.yaml
   - deployment.yaml
+  - knative-trigger.yaml
