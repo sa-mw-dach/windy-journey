@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: ui-run-first
+  name: ui-frontend-run-first
   namespace: windy-journey
   finalizers:
     - chains.tekton.dev/pipelinerun
@@ -12,13 +12,13 @@ spec:
     - name: IMAGE_TAG
       value: 1.0.0
     - name: IMAGE_NAME
-      value: quay.io/wvi/ui
+      value: quay.io/wvi/ui-frontend
     - name: GIT_REPO
       value: 'https://github.com/sa-mw-dach/windy-journey.git'
     - name: GIT_BRANCH
       value: main
     - name: CONTEXT_DIR
-      value: apps-src/ui   
+      value: apps-src/ui/frontend   
   pipelineRef:
     name: windy-journey
   serviceAccountName: pipeline
