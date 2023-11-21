@@ -10,8 +10,8 @@ patchesJson6902:
   - target:
       version: v1
       kind: ConfigMap
-      name: windy-journey-ui-config
+      name: image-processor-conf
     patch: |-
       - op: replace
-        path: /data/config
-        value: API_URL=
+        path: /data/INFER_URL
+        value: 
