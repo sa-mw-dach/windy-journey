@@ -12,28 +12,26 @@ You will have set up the (opinionated) AI/ML workflow which will simulate live f
 
 ## Folder structure
 
+This repository serves as a mono repository containing source codes of applications for this use case as well as manifests (yamls) to deploy resources on OpenShift. Usually you will split applications and infrastructure resources in separate repositories with different responsibilities. FOr the sake of this workshop and to make it easier accessible, we merged it all into one.
+
 ### /apps-src
 
-Source code for the applications used as part of this workshop
+Applications developed and used to realise the workflow of gathering images, annotating them and displaying them for users.
 
-### /apps-src/cam-sim
+| Folder                     | Description                                                                                                                                                                                                                                                                            |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| /cam-sim                   | CamSimulator: python application which streams the raw images of wind turbines. Could in practice be streamed from a drone for example                                                                                                                                                 |
+| /image-processor           | ImageProcessor: grabs the image stream from the CamSimulator (cloud event via Kafka) to inference them with our trained model to annotate them if a damage is found                                                                                                                    |
+| /ui/fontend && /ui/backend | UI: a backend written with NestJS to grab the images from the ImageProcessor (again cloud event via Kafka) and sends those to clients connected via WebSocket. Frontend written with Flutter to connect to the WebSocket of the backend to listen for images and display them properly |
 
-Application which is emulating a camera and is sending out images as a stream
+### /docs
 
 ...
 
-- manifests
-  - infra
-    - 01-Operators
-      - Minio (manifest vion MaxM)
-    - 02-Kafka
-    - 03-Serverless
-    - 03-OpenShift-Data-Science
-    -
-  - ## apps
-- docs
-  - OpenShift-installation.md
-  - Install-prerequisites.md
-  - Workshop-OpenShift-Data-Science.md
-  - Workshop-Runtime.md
-  - images/
+### /manifests
+
+...
+
+### /ml
+
+...
