@@ -252,6 +252,10 @@ Check that messages are arriving:
 
 ```
 oc exec manu-vi-kafka-0 -c kafka -n manuela-visual-inspection -- bin/kafka-console-consumer.sh --topic visual-inspection-images --bootstrap-server manu-vi-kafka-bootstrap.manuela-visual-inspection.svc:9092
+
+
+oc exec wvi-kafka-0 -c kafka -n windy-journey -- bin/kafka-console-consumer.sh --topic visual-inspection-images --bootstrap-server wvi-kafka-bootstrap.windy-journey.svc:9092
+
 ```
 
 Expected example output:

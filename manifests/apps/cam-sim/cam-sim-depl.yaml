@@ -4,7 +4,7 @@ metadata:
   name: cam-sim-conf
 data:
   BOOTSTRAP_SERVER: wvi-kafka-bootstrap:9092
-  TOPIC: windy-journey-images
+  TOPIC: visual-inspection-images
   FPS: '0.1'
   CAMID: '0'
 ---

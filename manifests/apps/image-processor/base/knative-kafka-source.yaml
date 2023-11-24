@@ -16,4 +16,4 @@ spec:
       kind: Broker
       name: default
   topics:
-    - windy-journey-images
+    - visual-inspection-images
