@@ -2,7 +2,6 @@ kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
   name: windy-journey-ui
-  namespace: windy-journey
   labels:
     app: windy-journey-ui
     app.kubernetes.io/part-of: windy-journey

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cam-sim-conf
+data:
+  BOOTSTRAP_SERVER: wvi-kafka-bootstrap:9092
+  TOPIC: visual-inspection-images
+  FPS: '0.1'
+  CAMID: '0'

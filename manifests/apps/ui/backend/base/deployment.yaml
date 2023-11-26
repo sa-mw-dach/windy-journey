@@ -3,7 +3,6 @@ apiVersion: apps/v1
 metadata:
   annotations:
   name: windy-journey-backend
-  namespace: windy-journey
   labels:
     app: windy-journey-backend
     app.kubernetes.io/part-of: windy-journey
