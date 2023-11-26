@@ -8,8 +8,7 @@ This section describes the installation of the runtime on OpenShift. The model t
 - [Installation](#installation)
   - [Create namespaces](#create-namespaces)
   - [Create a kafka cluster and topic](#create-a-kafka-cluster-and-topic)
-
-
+  - [Set up Serverless](#set-up-serverless)
 
 ## Prerequisites
 
