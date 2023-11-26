@@ -196,4 +196,52 @@ else
 fi
 
 
+# --- Create UI Backend 
+echo -n "Create UI Backend ..."
+oc apply -k ui/backend/base/ -n $NS >/dev/null 2>&1
+if [[ $? == 0 ]]; then
+  sleep 3
+  oc wait --for=condition=Available --timeout=120s deployment/windy-journey-backend -n $NS >/dev/null
+  if [[ $? == 0 ]]; then
+    echo "✅ "
+  else
+      echo "💥 ERROR!"
+  fi  
+else
+  echo "💥 ERROR!"
+  exit
+fi
+
+# --- Create UI Frontend 
+echo -n "Create UI Frontend ..."
+oc apply -k ui/frontend/overlays/workshop/ -n $NS >/dev/null 2>&1
+if [[ $? == 0 ]]; then
+  sleep 3
+  oc wait --for=condition=Available --timeout=120s deployment/windy-journey-ui -n $NS >/dev/null
+  if [[ $? == 0 ]]; then
+    echo "✅ "
+  else
+      echo "💥 ERROR!"
+  fi  
+else
+  echo "💥 ERROR!"
+  exit
+fi
+
+
+# --- Create Cam-Sim 
+echo -n "Create Cam-Sim ..."
+oc apply -f cam-sim/cam-sim-depl.yaml -n $NS >/dev/null 2>&1
+if [[ $? == 0 ]]; then
+  sleep 3
+  oc wait --for=condition=Available --timeout=120s deployment/cam-sim -n $NS >/dev/null
+  if [[ $? == 0 ]]; then
+    echo "✅ "
+  else
+      echo "💥 ERROR!"
+  fi  
+else
+  echo "💥 ERROR!"
+  exit
+fi
 
