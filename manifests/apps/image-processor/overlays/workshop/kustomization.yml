@@ -14,4 +14,4 @@ patchesJson6902:
     patch: |-
       - op: replace
         path: /data/INFER_URL
-        value: 
+        value: https://wvi-windy-journey.apps.ocp5.stormshift.coe.muc.redhat.com/v2/models/wvi/infer

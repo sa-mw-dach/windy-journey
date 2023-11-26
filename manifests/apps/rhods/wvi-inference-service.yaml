@@ -1,0 +1,20 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  annotations:
+    openshift.io/display-name: wvi
+    serving.kserve.io/deploymentMode: ModelMesh
+  labels:
+    name: wvi
+    opendatahub.io/dashboard: "true"
+  name: wvi
+spec:
+  predictor:
+    model:
+      modelFormat:
+        name: onnx
+        version: "1"
+      runtime: wvi
+      storage:
+        key: aws-connection-wvi
+        path: wvi-best.onnx
