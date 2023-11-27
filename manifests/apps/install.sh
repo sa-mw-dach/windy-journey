@@ -163,7 +163,6 @@ if [[ "$CONF_RHODS" == true ]]; then
 
   echo -n "- Upload model to minio ..."
   aws --endpoint-url ${MINIOAPI} --no-verify-ssl s3 cp /tmp/wvi-best.onnx s3://${KY}/wvi-best.onnx >/dev/null 2>&1
-  curl -s -L ${MODELURL} -o /tmp/wvi-best.onnx >/dev/null
   check_return_code $?
 
 
@@ -203,70 +202,73 @@ if [[ "$CONF_RHODS" == true ]]; then
   fi
 fi
 
+# Configure APPS
+if [[ "$CONF_APPS" == true ]]; then
 
-# --- Create Image Processor Service
-echo -n "Create Image Processor Service ..."
-oc apply -k image-processor/overlays/workshop/ -n $NS >/dev/null 2>&1
-if [[ $? == 0 ]]; then
-  sleep 3
-  oc wait --for=condition=ready --timeout=60s pod  -l serving.knative.dev/service=image-processor -n $NS >/dev/null
+  # --- Create Image Processor Service
+  echo -n "Create Image Processor Service ..."
+  oc apply -k image-processor/overlays/workshop/ -n $NS >/dev/null 2>&1
   if [[ $? == 0 ]]; then
-    echo "✅ "
+    sleep 3
+    oc wait --for=condition=ready --timeout=60s pod  -l serving.knative.dev/service=image-processor -n $NS >/dev/null
+    if [[ $? == 0 ]]; then
+      echo "✅ "
+    else
+        echo "💥 ERROR!"
+    fi  
   else
-      echo "💥 ERROR!"
-  fi  
-else
-  echo "💥 ERROR!"
-  exit
-fi
+    echo "💥 ERROR!"
+    exit
+  fi
 
 
-# --- Create UI Backend 
-echo -n "Create UI Backend ..."
-oc apply -k ui/backend/base/ -n $NS >/dev/null 2>&1
-if [[ $? == 0 ]]; then
-  sleep 3
-  oc wait --for=condition=Available --timeout=120s deployment/windy-journey-backend -n $NS >/dev/null
+  # --- Create UI Backend 
+  echo -n "Create UI Backend ..."
+  oc apply -k ui/backend/base/ -n $NS >/dev/null 2>&1
   if [[ $? == 0 ]]; then
-    echo "✅ "
+    sleep 3
+    oc wait --for=condition=Available --timeout=120s deployment/windy-journey-backend -n $NS >/dev/null
+    if [[ $? == 0 ]]; then
+      echo "✅ "
+    else
+        echo "💥 ERROR!"
+    fi  
   else
-      echo "💥 ERROR!"
-  fi  
-else
-  echo "💥 ERROR!"
-  exit
-fi
+    echo "💥 ERROR!"
+    exit
+  fi
 
-# --- Create UI Frontend 
-echo -n "Create UI Frontend ..."
-oc apply -k ui/frontend/overlays/workshop/ -n $NS >/dev/null 2>&1
-if [[ $? == 0 ]]; then
-  sleep 3
-  oc wait --for=condition=Available --timeout=120s deployment/windy-journey-ui -n $NS >/dev/null
+  # --- Create UI Frontend 
+  echo -n "Create UI Frontend ..."
+  oc apply -k ui/frontend/overlays/workshop/ -n $NS >/dev/null 2>&1
   if [[ $? == 0 ]]; then
-    echo "✅ "
+    sleep 3
+    oc wait --for=condition=Available --timeout=120s deployment/windy-journey-ui -n $NS >/dev/null
+    if [[ $? == 0 ]]; then
+      echo "✅ "
+    else
+        echo "💥 ERROR!"
+    fi  
   else
-      echo "💥 ERROR!"
-  fi  
-else
-  echo "💥 ERROR!"
-  exit
-fi
+    echo "💥 ERROR!"
+    exit
+  fi
 
 
-# --- Create Cam-Sim 
-echo -n "Create Cam-Sim ..."
-oc apply -f cam-sim/cam-sim-depl.yaml -n $NS >/dev/null 2>&1
-if [[ $? == 0 ]]; then
-  sleep 3
-  oc wait --for=condition=Available --timeout=120s deployment/cam-sim -n $NS >/dev/null
+  # --- Create Cam-Sim 
+  echo -n "Create Cam-Sim ..."
+  oc apply -k cam-sim/base/ -n $NS >/dev/null 2>&1
   if [[ $? == 0 ]]; then
-    echo "✅ "
+    sleep 3
+    oc wait --for=condition=Available --timeout=120s deployment/cam-sim -n $NS >/dev/null
+    if [[ $? == 0 ]]; then
+      echo "✅ "
+    else
+        echo "💥 ERROR!"
+    fi  
   else
-      echo "💥 ERROR!"
-  fi  
-else
-  echo "💥 ERROR!"
-  exit
-fi
+    echo "💥 ERROR!"
+    exit
+  fi
 
+fi
