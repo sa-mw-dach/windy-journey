@@ -4,6 +4,24 @@ KY=wvi
 KT=visual-inspection-images
 
 
+check_return_code() {
+  if [[ $1 == 0 ]]; then
+      echo "✅ "
+  else
+      echo "💥 ERROR!"
+      exit
+  fi  
+}
+
+# --- Check cli -----------------------------------------------------
+echo -n "Check oc cli "
+which oc >/dev/null 2>&1
+check_return_code $?
+
+echo -n "Check aws cli "
+which aws >/dev/null 2>&1
+check_return_code $?
+
 # --- VARS -----------------------------------------------------
 source install_cleanup_vars.sh
 
@@ -44,20 +62,20 @@ if [[ "$INST_KAFKA" == true ]]; then
     echo "-> Installing OpenShift AMQ Streams Operator..."
 
     read -r -d '' YAML_CONTENT <<EOF
-  apiVersion: operators.coreos.com/v1alpha1
-  kind: Subscription
-  metadata:
-    labels:
-      operators.coreos.com/amq-streams.openshift-operators: ""
-    name: amq-streams
-    namespace: openshift-operators
-  spec:
-    channel: stable
-    installPlanApproval: Automatic
-    name: amq-streams
-    source: redhat-operators
-    sourceNamespace: openshift-marketplace
-    startingCSV: amqstreams.v2.4.0-0
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/amq-streams.openshift-operators: ""
+  name: amq-streams
+  namespace: openshift-operators
+spec:
+  channel: stable
+  installPlanApproval: Automatic
+  name: amq-streams
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: amqstreams.v2.4.0-0
 EOF
     echo "$YAML_CONTENT" | oc apply -f -
     sleep 5
@@ -116,29 +134,29 @@ if [[ "$INST_KNATIVE" == true ]]; then
     echo "-> Installing OpenShift Serverless Operator..."
 
     read -r -d '' YAML_CONTENT <<EOF
-  ---
-  apiVersion: v1
-  kind: Namespace
-  metadata:
-    name: openshift-serverless
-  ---
-  apiVersion: operators.coreos.com/v1
-  kind: OperatorGroup
-  metadata:
-    name: serverless-operators
-    namespace: openshift-serverless
-  spec: {}
-  ---
-  apiVersion: operators.coreos.com/v1alpha1
-  kind: Subscription
-  metadata:
-    name: serverless-operator
-    namespace: openshift-serverless
-  spec:
-    channel: stable 
-    name: serverless-operator 
-    source: redhat-operators 
-    sourceNamespace: openshift-marketplace 
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openshift-serverless
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: serverless-operators
+  namespace: openshift-serverless
+spec: {}
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: serverless-operator
+  namespace: openshift-serverless
+spec:
+  channel: stable 
+  name: serverless-operator 
+  source: redhat-operators 
+  sourceNamespace: openshift-marketplace 
 EOF
     echo "$YAML_CONTENT" | oc apply -f -
     sleep 10

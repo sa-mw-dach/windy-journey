@@ -4,6 +4,25 @@ KY=wvi
 KT=visual-inspection-images
 
 
+check_return_code() {
+  if [[ $1 == 0 ]]; then
+      echo "✅ "
+  else
+      echo "💥 ERROR!"
+      exit
+  fi  
+}
+
+# --- Check cli -----------------------------------------------------
+echo -n "Check oc cli "
+which oc >/dev/null 2>&1
+check_return_code $?
+
+echo -n "Check aws cli "
+which aws >/dev/null 2>&1
+check_return_code $?
+
+
 # --- VARS -----------------------------------------------------
 source install_cleanup_vars.sh
 
@@ -121,25 +140,31 @@ if [[ "$CONF_RHODS" == true ]]; then
   BUCKET=wvi
   MODELURL=https://github.com/sa-mw-dach/windy-journey/releases/download/v0.0.0/wind-turbine-weights-best-2023_10_31.onnx
 
+  AWS_SECRET_ACCESS_KEY=minio123
+  AWS_ACCESS_KEY_ID=minio
+  MINIOAPI=https://$(oc get route minio-api -n minio | grep minio-api | awk '{print $2}')
+
   echo "Load a pre-train model into minio bucket..."
 
-  echo -n "- Create  bucket ..."
-  oc exec -n minio deploy/minio -- mkdir -p data/${BUCKET} >/dev/null
+  aws --endpoint-url ${MINIOAPI} --no-verify-ssl s3 ls s3://${KY} >/dev/null 2>&1
   if [[ $? == 0 ]]; then
-      echo "✅ "
+    echo "- Bucket ${KY} exists ✅ " 
   else
-      echo "💥 ERROR!"
-      exit
+    echo -n "- Create  bucket ..."
+    aws --endpoint-url ${MINIOAPI} --no-verify-ssl s3 mb s3://${KY} >/dev/null 2>&1
+    check_return_code $?
   fi
 
+
   echo -n "- Download model ..."
-  oc exec -n minio deploy/minio -- curl -L ${MODELURL} -o data/${BUCKET}/wvi-best.onnx >/dev/null
-  if [[ $? == 0 ]]; then
-      echo "✅ "
-  else
-      echo "💥 ERROR!"
-      exit
-  fi
+  curl -s -L ${MODELURL} -o /tmp/wvi-best.onnx >/dev/null
+  check_return_code $?
+
+
+  echo -n "- Upload model to minio ..."
+  aws --endpoint-url ${MINIOAPI} --no-verify-ssl s3 cp /tmp/wvi-best.onnx s3://${KY}/wvi-best.onnx >/dev/null 2>&1
+  curl -s -L ${MODELURL} -o /tmp/wvi-best.onnx >/dev/null
+  check_return_code $?
 
 
   # --- Create model server

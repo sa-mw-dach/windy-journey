@@ -9,3 +9,4 @@ CONF_KAFKA=true
 
 INST_MINIO=true
 
+CONF_RHODS=true
