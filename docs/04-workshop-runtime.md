@@ -1,44 +1,40 @@
 # Automating Visual Inspections with AI - Runtime workshop
-Automating Visual Inspections with AI on [Red Hat OpenShift Data Science](https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-data-science) 
+
+Automating Visual Inspections with AI on [Red Hat OpenShift Data Science](https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-data-science)
 
 ## Demo Execution
 
 During the demo we are going to finalize the installation and explain each component of the serverless architecture.
 
-### Deploy the images-processor
+### Deploy the ImageProcessor
 
-The images-processor is implemented as knative service. It processes the submitted images and detects anomalies.
+The images-processor is implemented as a knative service. It processes the submitted images and detects anomalies.
 
-First, edit `image-processor/manifests/image-processor-kn-svc.yaml` and update the inference endpoint:
+First, edit `manifests/image-processor/overlays/workshop/kustomization.yaml` and update the inference endpoint:
 
 ```
 ...
-data:
-  INFER_URL: "https://<model-name>-<my-ods-project>.apps.<my-ocp-cluster>/v2/models/manu-vi/infer"
+path: /data/INFER_URL
+value: PASTE_URL_HERE
 ...
 ```
 
-Deploy the knative service:
+(You have set up this URL by creating the Data Connector in the [ML](../ml/README.md) part of this workshop, so you can check this in the OpenShift Data Science console)
+
+Now deploy the necessary manifests by applying the `kustomization.yaml` which will use all manifests defined in the [base](../manifests/apps/image-processor/base) folder and patches the INFER_URL value you just changed:
 
 ```
-oc apply -f image-processor/manifests/image-processor-kn-svc.yaml
+oc apply -k manifests/apps/image-processor/overlays/workshop
 ```
 
-If applicable, explain the [image-processor-kn-svc.yaml](../image-processor/manifests/image-processor-kn-svc.yaml)
-
-Show and explain the Serverless Services and Revisions in the OpenShift Admin Console:
-![Serverless Services](../images/serverless-services.png)
+Since we are making use of Knative, the most interesting part is the [Knative Service](../manifests/apps/image-processor/base/knative-service.yaml). Take a look at the `YAML` and see how how it works. You can also check the Serverless section in OpenShift and take a look at Services and Revisions in the OpenShift Admin Web Console:
+![Serverless Services](images/serverless-services.png)
 
 After the initial startup, the service is scaled back to zero because the service does not receive any images yet. See the Developer Console:
 
-![autoscaled-to-zero](../images/autoscaled-to-zero.png)
+![autoscaled-to-zero](images/autoscaled-to-zero.png)
 
-### Connect to kafka
-
-The images-processor does not need to deal with any kafka details. It just receives [Cloud-Events](https://cloudevents.io/) via a [broker and trigger](https://knative.dev/docs/eventing/#event-brokers-and-triggers).
-
-![Broker-Trigger](https://knative.dev/docs/images/home-images/knative_flowchart_graphic.svg)
-
+<!--
 The images-processor python snippet shows that it is agnostic to Kafka or any other event source:
 
 ```python
@@ -55,118 +51,79 @@ def process_image():
         f"{event['type']} and specversion {event['specversion']}"
     )
 ...
-```
+``` -->
 
-The Knative Service has been already created with the previous step
-
-```
-oc get ksvc image-processor
-
-NAME              URL                                                                                        LATESTCREATED           LATESTREADY             READY   REASON
-image-processor   http://image-processor-manuela-visual-inspection.apps.ocp5.stormshift.coe.muc.redhat.com   image-processor-00001   image-processor-00001   True
-```
-
-Let's define a default broker and a [Kafka-Source](../image-processor/manifests/image-processor-kafkasource.yaml) and set the sink to the default broker:
-
-```
-oc apply -f image-processor/manifests/image-processor-kafkasource.yaml
-```
+We are also making use of a default [Broker](../manifests/apps/image-processor/base/knative-broker.yaml) and a [KafkaSource](../manifests/apps/image-processor/base/knative-kafka-source.yaml) where the `KafkaSource` reads messages stored in existing Kafka topics, and sends those messages as [CloudEvents](https://cloudevents.io/) through HTTP to its configured sink (in this case the default `Broker`).
 
 Check the topology in the Developer Console:
 
-![kafka-source](../images/kafka-source.png)
+![KafkaSource](images/kafka-source.png)
 
-Now we just need to set the [trigger](../image-processor/manifests/image-processor-trigger.yaml) so that the service receives images as cloud events:
+Last part of this setup is the [Trigger](../manifests/apps/image-processor/base/knative-trigger.yaml) which is responsible for listening for CloudEvents from the default `Broker` and sends those to a subscriber, in this case our Knative `Service`.
 
-```
-oc apply -f image-processor/manifests/image-processor-trigger.yaml
-```
+![ImageProcessor Setup](images/trigger.png)
 
-The broker is now connected to the image-processor knative service:
-![Trigger](../images/trigger.png)
+Therefore the ImageProcessor does not need to deal with any Kafka details. It just receives CloudEvents via a [Broker and Trigger](https://knative.dev/docs/eventing/#event-brokers-and-triggers) as explained before.
 
-### Deploy the dashboard
+![Broker-Trigger](https://knative.dev/docs/images/home-images/knative_flowchart_graphic.svg)
 
-The dashboard shows the incoming images and highlights the anomalies with colored bounding boxes.
-The dashboard is implemented as knative service and receives cloud events, which are emitted by the image processor.
+### Deploy the Dashboard
 
-Deploy the dashboard [knative service](../dashboard/manifests/dashboard-kn-svc.yaml) and [trigger](../dashboard/manifests/dashboard-trigger.yaml):
+The Dashboard has 2 parts, a frontend component built with the [Flutter](https://flutter.dev) framework and a backend built with the [NestJS](https://nestjs.com) framework. The backend also listens to `CloudEvents` (check the [knative-trigger.yaml](../manifests/apps/ui/backend/base/knative-trigger.yaml) resource) but in this case the one which are being send by the ImageProcessor after they have been processed and potentially annotated. The backend also acts as a WebSocket server where all images from the `CloudEvent` are being send so clients can receive those directly. The frontend is acting as a WebSocket client which will then ultimately receive those images and display them for the users.
 
-```
-oc apply -k dashboard/manifests
-```
+Both applications are classic Kubernetes / OpenShift deployments where we need the combination of `Deployment`, `Service` and `Route` manifests and we are ready. For the sake of customisability, we also make use of `ConfigMap` to adjust specific configuration on the fly (as well as dedicatd `ServiceAccount` which is good practice but not necessary).
 
-Show the developer console:
-![Dashboard KN Service](../images/kn-dashboard.png)
-
-Open the Dashboard user via OpenShift Admin Console -> Serverless -> Routes:
-![Serverless Routes](../images/serverless-routes.png)
-
-Or get the URL of the dashboard via cli:
+There is nothing to adjust for the backend, so we can directly apply the `kustomization.yaml` from the base folder:
 
 ```
-oc get routes.serving.knative.dev dashboard
-
-NAME        URL                                                                                  READY   REASON
-dashboard   http://dashboard-manuela-visual-inspection.apps.ocp5.stormshift.coe.muc.redhat.com   True
+oc apply -k manifests/apps/ui/backend/base
 ```
 
-NOTE: Depending on your TLS configuration, ensure you're requesting the dashboard through HTTP and not HTTPS.
+Once deployed, you should see something like this in our OpenShift Web Developer Console:
 
-Click on the Dashboard URL and navigate to `Automated Visual Inspection`:
+![Backend Deployment](images/backend.png)
 
-No images are displayed yet, because the camera simulator (cam-sim) is not running.
+Once the backend is deployed and running, we have to check the `Route` resource and copy the assign URL. Check the Network -> Routes section in the OpenShift Admin Web Console where you should see "windy-journey-backend". In the detail page of this `Route` you can see the assigned URL in the Location section:
 
-### Deploy the Camera simulator
+![Backend Route](images/backend-route.png)
 
-The camera simulator (cam-sim) sends images into the backend via a kafka topic.
-
-Deploy the simulator:
+Now click of the copy button at the end of the URL so we can update the patch value in the [kustomization.yaml](../manifests/apps/ui/frontend/overlays/workshop/kustomization.yml):
 
 ```
-oc apply -f cam/manifests/cam-sim-depl.yaml
+path: /data/config
+value: API_URL=PASTE_URL_HERE
 ```
 
-Check and show that pod is running and submitting images:
+This enables us to deploy the frontend now accordingly:
 
 ```
-oc logs -l app=cam-sim
-...
-client.py (INFO): Imagae 36: {'label': 'good', 'path': 'data/metal_nut/good/178.png'}
-client.py (INFO): Message sent: visual-inspection-images - 2021-01-24 18:48:45.479030 - (350, 350, 3)
-client.py (INFO): Imagae 37: {'label': 'scratch', 'path': 'data/metal_nut/scratch/020.png'}
-...
+oc apply -k manifests/apps/ui/frontend/overlays/workshop
 ```
 
-**image-processor is scaling**
+This deployment will look very similar in the OpenShift Web Developer Console:
 
-The image-processor is receiving cloud events and i is starting.
+![Frontend Deployment](images/frontend.png)
+
+You could open up the UI now in your browser (either by clicking the upper right icon of your frontend deployment as seen in the last screenshot or by accessing the `Route` resource via the OpenShift Web Admin Console and copy&paste the URL in the Locatoin section into a new tab).
+
+Altough the UI should be accessible now, no images will be displayed - which is correct at this point! We are missing our last bit: the CamSim.
+
+### Deploy the CamSim:
+
+RAW images of wind turbines could come from different sources. In a real case scenario we could have a drone flying around which takes images in real time. To emulate that we have a python application in place which sends RAW images to a Kafka topic.
+
+Since the CamSim is a lightweight application running in the background only sending out images to a Kafka topic, we only need a `Deployment` and `ConfigMap` resource which we apply with [kustomization.yaml](../manifests/apps/cam-sim/base/kustomization.yaml) again:
+
+```
+oc apply -k manifests/apps/cam-sim/base
+```
+
+Now you should see the ImageProcessor scaling up since it's receiving CloudEvents through Kafka.
 Note, be patient. It takes some time to start the image-processor pod because it needs to initialize TensorFlow and load the model.
 
-![Scale to one](../images/scale-to-one.png)
+### Check the Dashboard (again)
 
-Check the logs of the image-processor:
-
-```
-oc logs -l serving.knative.dev/service=image-processor -c image-processor -f
-```
-
-Expected output
-
-Once it is started you can see the log of the dashboard knative service
-
-```
-oc logs -l serving.knative.dev/service=dashboard -c dashboard -f
-...
-emitting event "server2ui2" to all [/ui2]
-emitting event "server2ui2" to all [/ui2]
-...
-
-```
-
-... or view the dashboard.
-
-**View the dashboard:**
+TODO
 
 ![visual-inspection](../images/manu-vi.gif)
 

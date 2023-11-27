@@ -26,7 +26,14 @@ Applications developed and used to realise the workflow of gathering images, ann
 
 ### /docs
 
-...
+All documentation necessary to set up the used stack for the Visual Inspection use case can be found here.
+
+| File                                  | Description                                                                                                                                                                                                                                                    |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 01-openshift-installation.md          | Guide on how to install an OpenShift cluster.                                                                                                                                                                                                                  |
+| 02-install-prerequisites.md           | The applications of this use case will use certain services we need to install on our OpenShift cluster. We will need services like Serverless, AMQ Streams (Kafka) and Data Science. This guide will explain how to install those.                            |
+| 03-workshop-openshift-data-science.md | For this use case we want to train and inference a model which will be capable of finding anomalies in wind turbine images. We will use the capabilities of OpenShift Data Science to do so. This guide will explain how to use Data Science for our workshop. |
+| 04-workshop-openshift-runtime.md      | Once everything else is set up, we will deploy our actual applications which will make use of the now existing infrastructure of OpenShift services and the Data Science stack. This guide explains how to deploy them all correctly.                          |
 
 ### /manifests
 

@@ -2,7 +2,6 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: windy-journey-backend
-  namespace: windy-journey
 spec:
   broker: default
   filter:

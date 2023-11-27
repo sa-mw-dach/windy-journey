@@ -4,8 +4,5 @@ kind: Kustomization
 namespace: windy-journey
 
 resources:
-  - knative-broker.yaml
-  - knative-kafka-source.yaml
-  - knative-trigger.yaml
-  - knative-service.yaml
   - config-map.yaml
+  - deployment.yaml
