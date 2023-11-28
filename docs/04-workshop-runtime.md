@@ -19,7 +19,7 @@ value: PASTE_URL_HERE
 ...
 ```
 
-(You have set up this URL by creating the Data Connector in the [ML](../ml/README.md) part of this workshop, so you can check this in the OpenShift Data Science console)
+(You have set up this URL by creating the Data Connector in [03-workshop-openshift-data-science.md](./03-workshop-openshift-data-science.md), so you can check this in the OpenShift Data Science console)
 
 Now deploy the necessary manifests by applying the `kustomization.yaml` which will use all manifests defined in the [base](../manifests/apps/image-processor/base) folder and patches the INFER_URL value you just changed:
 
