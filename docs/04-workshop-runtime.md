@@ -168,7 +168,7 @@ Expected example output:
 
 ```
 ...
-    Bootstrap Servers:  manu-vi-kafka-bootstrap.manuela-visual-inspection.svc:9092
+    Bootstrap Servers:  wvi-kafka-bootstrap.windy-journey.svc:9092
     Name:               plain
     Type:               plain
 ...
@@ -186,14 +186,14 @@ Expected example output:
 ...
 Spec:
   Bootstrap Servers:
-    manu-vi-kafka-bootstrap.manuela-visual-inspection.svc:9092
+    wvi-kafka-bootstrap.manuela-visual-inspection.svc:9092
  ...
 ```
 
 Check Topic:
 
 ```
-oc exec manu-vi-kafka-0 -c kafka -n manuela-visual-inspection -- bin/kafka-topics.sh --list --bootstrap-server manu-vi-kafka-bootstrap.manuela-visual-inspection.svc:9092
+oc exec wvi-kafka-0 -c kafka -n windy-journey -- bin/kafka-topics.sh --list --bootstrap-server wvi-kafka-bootstrap.windy-journey.svc:9092
 ```
 
 Expected example output:
