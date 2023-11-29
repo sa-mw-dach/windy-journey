@@ -6,9 +6,9 @@ This part of the workshop cover the following topics:
 
 - [Prerequisites](#prerequisites)
 - [Setup a RHODS workbench](#setup-a-rhods-workbench)
-- [Model training](#model-training)
+- [Model Training](#model-training)
 - [Model Serving](#model-serving)
-- [Test inferencing with a REST API call](#test-inferencing-with-a-rest-api-call)
+- [Test Inferencing with a REST API call](#test-inferencing-with-a-rest-api-call)
 
 ## Prerequisites
 
