@@ -123,7 +123,9 @@ Note, be patient. It takes some time to start the image-processor pod because it
 
 ### Check the Dashboard (again)
 
-TODO
+If everything went right you should now actually see images appear in the dashboard. Images with green borders mean that no anomalies have been found in the image and those with red borders indicate wind turbines with damages (which will also be shown in the lower part of the dashboard).
+
+Give it some time - sometimes our simulated drone captures only good images of wind turbines with no damages but it will find one eventually! :)
 
 ![visual-inspection](../images/manu-vi.gif)
 
@@ -146,14 +148,6 @@ oc logs -l serving.knative.dev/service=image-processor -c image-processor -f
 
 The `image-processor` receives cloud event that includes a images, calls the TensorFlow ML model, and predicts an anomaly (scratch or bent).
 
-## Demo Clean-up
-
-```
-oc delete -f cam/manifests/cam-sim-depl.yaml
-oc delete -k dashboard/manifests/
-oc delete -k image-processor/manifests/
-```
-
 # Troubleshooting hints
 
 ## Kafka
@@ -161,7 +155,7 @@ oc delete -k image-processor/manifests/
 Find Kafka Bootstrap server:
 
 ```
-oc describe Kafka manu-vi -n manuela-visual-inspection
+oc describe Kafka wvi -n windy-journey
 ```
 
 Expected example output:
