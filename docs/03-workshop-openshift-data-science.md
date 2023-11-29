@@ -41,32 +41,32 @@ oc apply -f https://raw.githubusercontent.com/sa-mw-dach/windy-journey/main/mani
 - Launch RHODS via the application launcher (nine-dots) -> **`Red Hat OpenShift Data Science`**
 - Create a new Data Science project -> **`Create data science project`**.
 
-  If you have your own OpenShift cluster, you can name the project 'wvi'. If not add your initials. E.g. 'wvi-stb'.
-  Don't choose to long names, because project and model server names are internally concatenated, which could lead into problems.
+  If you have your own OpenShift cluster, you can name the project 'wvi'. If not add your initials. E.g. 'wvi-stb' or team number like 'wvi-1'.
+  Don't choose too long names, because project and model server names are internally concatenated, which could lead into problems.
 
-  - Name: `wvi`
+  - Name: `wvi-{YOUR_TEAM_NUMBER}`
   - Resource name: `windy visual inspection `
   - -> **`Create`**.
 
 - Create a data connection with your S3 configuration
 
   - Data connections -> **`Add Data connections`**.
-  - Name: `wvi`
+  - Name: `wvi-{YOUR_TEAM_NUMBER}`
   - AWS_ACCESS_KEY_ID: `minio`
   - AWS_SECRET_ACCESS_KEY: `minio123`
   - AWS_S3_ENDPOINT: `http://minio-service.minio.svc.cluster.local:9000`
   - AWS_DEFAULT_REGION: `us-east2` (it seem this cannot be empty)
-  - AWS_S3_BUCKET: `wvi`
+  - AWS_S3_BUCKET: `wvi-{YOUR_TEAM_NUMBER}`
 
 - Create new RHODS workbench
 
   - Workbenches -> **`Create workbench`**.
-  - Name: `wvi`
+  - Name: `wvi-{YOUR_TEAM_NUMBER}`
   - Image: `CUDA` (assuming you have a cluster with a Nvidia GPU)
   - Deployment size: `Small`
   - Number of GPUs: 1
   - Cluster storage: `Create new cluster storage`
-  - Data connection: `Use existing data connection` -> `wvi`
+  - Data connection: `Use existing data connection` -> `wvi-{YOUR_TEAM_NUMBER}`
   - -> **`Create workbench`**.
 
 - Note, in case the workbench does not start, please check if LimitRanges block the pod. Find the created project in the OpenShift console, navigate to Administration -> LimitRanges and delete the LimitRange that was auto created.
@@ -103,7 +103,7 @@ In case you have to not had the time or resources to train the model by yourself
 - Create model server in your data science project
 
   - Models and model servers -> **`Configure server`**
-  - Server name: `wvi`
+  - Server name: `wvi-{YOUR_TEAM_NUMBER}`
   - Serving runtime: `OpenVINO Model Server`
   - Number of model server replicas to deploy: `1`
   - Model server size: `Small`
@@ -113,11 +113,11 @@ In case you have to not had the time or resources to train the model by yourself
 
 - Deploy the trained model -> **`Deploy Model`**
 
-  - Model Name: `wvi`
+  - Model Name: `wvi-{YOUR_TEAM_NUMBER}`
   - Model framework: `onnx - 1`
   - Model location: `Existing data connection`
-  - Name: `wvi`
-  - Folder path: `wvi-best.onnx`
+  - Name: `wvi-{YOUR_TEAM_NUMBER}`
+  - Folder path: `wvi-{YOUR_TEAM_NUMBER}-best.onnx`
   - -> **`Deploy`**
 
 - Wait until Status is green / loaded
