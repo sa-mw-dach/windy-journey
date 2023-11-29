@@ -35,7 +35,7 @@ oc apply -f https://raw.githubusercontent.com/sa-mw-dach/windy-journey/main/mani
 
 ## Setup a RHODS workbench
 
-### Create new RHODS workbench for Ultralytics Pytorch Yolov5
+### Create new RHODS workbench for Ultralytics Pytorch YOLOv5
 
 - Log in to the OpenShift web console
 - Launch RHODS via the application launcher (nine-dots) -> **`Red Hat OpenShift Data Science`**
@@ -77,9 +77,9 @@ oc apply -f https://raw.githubusercontent.com/sa-mw-dach/windy-journey/main/mani
 
 ### Explore and run the model training notebook
 
-- Navigate to `windy-journey/ml/pytorch` and open `01_Visual_Inspection_Yolov5_Model_Training.ipynb`
+- Navigate to `windy-journey/ml/pytorch` and open `01_Visual_Inspection_YOLOv5_Model_Training.ipynb`
 - Explore or explain and run cells step by step
-  - Setup and test the Ultralytics Yolov5 toolkit
+  - Setup and test the Ultralytics YOLOv5 toolkit
   - Inspect training dataset (image and labels)
   - Model training
     - _Model training can take ~30 minutes or more even with GPUs. You could jump to [Model Serving](#model-serving), use a pre-trained model and come back later._
@@ -128,7 +128,7 @@ In case you have to not had the time or resources to train the model by yourself
 Show how an ML REST call could be integrated into your 'intelligent' Python application.
 
 - Return to the workbench
-- Navigate to `windy-journey/ml/pytorch` and open `03_Visual_Inspection_Yolov5_Infer_Rest.ipynb`
+- Navigate to `windy-journey/ml/pytorch` and open `03_Visual_Inspection_YOLOv5_Infer_Rest.ipynb`
 - Study or explain and run cells step by step
   - Please don´t forget to update the inferencing URL
 - Demonstrate cool inferencing with RHODS :-)
