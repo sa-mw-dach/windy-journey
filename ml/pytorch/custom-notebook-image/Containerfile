@@ -1,0 +1,16 @@
+FROM quay.io/modh/odh-pytorch-notebook:v2-2023b-20240301-6560116
+
+
+COPY --chown=1001:root yolov5/ /opt/app-root/src/yolov5/
+
+RUN  pip install -r yolov5/requirements.txt && \
+     pip install opencv-python-headless && \
+    # Fix permissions to support pip in OpenShift environments \
+     chmod -R g+w /opt/app-root/lib/python3.9/site-packages && \
+     fix-permissions /opt/app-root -P
+
+USER 1001
+
+WORKDIR /opt/app-root/src
+
+ENTRYPOINT ["start-notebook.sh"]

@@ -1,0 +1,33 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-creator: admin
+    opendatahub.io/notebook-image-desc: Notebook for Visual Inspection Lab
+    opendatahub.io/notebook-image-name: Windy Journey Lab Notebook
+    opendatahub.io/notebook-image-url: quay.io/wvi/notebooks:wvi-pypytorch-20240402
+    opendatahub.io/recommended-accelerators: '["nvidia.com/gpu"]'
+  generation: 2
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: "true"
+    opendatahub.io/notebook-image: "true"
+  name: custom-windy-journey-lab-notebook
+  namespace: redhat-ods-applications
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+  - annotations:
+      opendatahub.io/notebook-python-dependencies: '[]'
+      opendatahub.io/notebook-software: '[{"name":"Ultralytics Yolo","version":"v5","visible":true},{"name":"torch","version":"2.0.1","visible":true},{"name":"torchvision","version":"0.15.2","visible":true}]'
+      openshift.io/imported-from: quay.io/wvi/notebooks:wvi-pypytorch-20240402
+    from:
+      kind: DockerImage
+      name: quay.io/wvi/notebooks:wvi-pypytorch-20240402
+    generation: 2
+    importPolicy:
+      importMode: Legacy
+    name: wvi-pypytorch-20240402
+    referencePolicy:
+      type: Source
