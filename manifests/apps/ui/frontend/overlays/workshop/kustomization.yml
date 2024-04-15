@@ -14,4 +14,4 @@ patchesJson6902:
     patch: |-
       - op: replace
         path: /data/config
-        value: API_URL=http://windy-journey-backend-windy-journey.apps.ocp5.stormshift.coe.muc.redhat.com/
+        value: API_URL=http://windy-journey-backend-windy-journey.apps.rosa-ptcdn.hguw.p1.openshiftapps.com

@@ -6,5 +6,4 @@ metadata:
     app: windy-journey-ui
     app.kubernetes.io/part-of: windy-journey
 data:
-  config: >
-    API_URL=http://windy-journey-backend-windy-journey.apps.ocp5.stormshift.coe.muc.redhat.com/
+  config: {}

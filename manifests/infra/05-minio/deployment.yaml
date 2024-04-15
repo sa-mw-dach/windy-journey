@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: minio
+    app.kubernetes.io/component: minio
+    app.kubernetes.io/instance: minio
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/part-of: minio
+    component: minio
+  name: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+      app.kubernetes.io/component: minio
+      app.kubernetes.io/instance: minio
+      app.kubernetes.io/name: minio
+      app.kubernetes.io/part-of: minio
+      component: minio
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: minio
+        app.kubernetes.io/component: minio
+        app.kubernetes.io/instance: minio
+        app.kubernetes.io/name: minio
+        app.kubernetes.io/part-of: minio
+        component: minio
+    spec:
+      containers:
+        - args:
+            - minio server /data --console-address :9090
+          command:
+            - /bin/bash
+            - -c
+          envFrom:
+            - secretRef:
+                name: minio-root-user
+          image: quay.io/minio/minio:latest
+          name: minio
+          ports:
+            - containerPort: 9000
+              name: api
+              protocol: TCP
+            - containerPort: 9090
+              name: console
+              protocol: TCP
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          volumeMounts:
+            - mountPath: /data
+              name: minio
+      volumes:
+        - name: minio
+          persistentVolumeClaim:
+            claimName: minio
+        - emptyDir: {}
+          name: empty
