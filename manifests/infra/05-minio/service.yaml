@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: minio
+    app.kubernetes.io/component: minio
+    app.kubernetes.io/instance: minio
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/part-of: minio
+    component: minio
+  name: minio
+spec:
+  ports:
+    - name: api
+      port: 9000
+      targetPort: api
+    - name: console
+      port: 9090
+      targetPort: 9090
+  selector:
+    app: minio
+    app.kubernetes.io/component: minio
+    app.kubernetes.io/instance: minio
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/part-of: minio
+    component: minio
+  sessionAffinity: None
+  type: ClusterIP

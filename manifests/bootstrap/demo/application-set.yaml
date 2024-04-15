@@ -1,0 +1,70 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: bootstrap-demo
+  namespace: openshift-gitops
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: in-cluster
+        name: base
+        repoURL: https://github.com/sa-mw-dach/windy-journey.git
+        targetRevision: main
+        path: manifests/bootstrap/demo/apps
+      - cluster: in-cluster
+        name: kafka
+        repoURL: https://github.com/sa-mw-dach/windy-journey.git
+        targetRevision: main
+        path: manifests/infra/02-kafka
+      - cluster: in-cluster
+        name: serverless
+        repoURL: https://github.com/sa-mw-dach/windy-journey.git
+        targetRevision: main
+        path: manifests/infra/03-serverless
+      - cluster: in-cluster
+        name: minio
+        repoURL: https://github.com/sa-mw-dach/windy-journey.git
+        targetRevision: main
+        path: manifests/infra/05-minio
+      - cluster: in-cluster
+        name: cam-sim
+        repoURL: https://github.com/sa-mw-dach/windy-journey.git
+        targetRevision: main
+        path: manifests/apps/cam-sim/base
+      - cluster: in-cluster
+        name: image-processor
+        repoURL: https://github.com/sa-mw-dach/windy-journey.git
+        targetRevision: main
+        path: manifests/apps/image-processor/base
+      - cluster: in-cluster
+        name: ui-frontend
+        repoURL: https://github.com/sa-mw-dach/windy-journey.git
+        targetRevision: main
+        path: manifests/apps/ui/frontend/base
+      - cluster: in-cluster
+        name: ui-backend
+        repoURL: https://github.com/sa-mw-dach/windy-journey.git
+        targetRevision: main
+        path: manifests/apps/ui/backend/base
+  template:
+    metadata:
+      name: '{{name}}'
+      namespace: openshift-gitops
+      labels:
+        component: bootstrap
+        purpose: '{{name}}'
+    spec:
+      project: default
+      source:
+        repoURL: '{{repoURL}}'
+        targetRevision: '{{targetRevision}}'
+        path: '{{path}}'
+      destination:
+        server: 'https://kubernetes.default.svc'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - RespectIgnoreDifferences=true

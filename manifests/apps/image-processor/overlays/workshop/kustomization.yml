@@ -14,4 +14,8 @@ patchesJson6902:
     patch: |-
       - op: replace
         path: /data/INFER_URL
+<<<<<<< HEAD
         value: https://wvi-windy-journey.apps.cluster-mmcf2.sandbox3023.opentlc.com/v2/models/wvi/infer
+=======
+        value: https://wvi-windy-journey.apps.rosa-ptcdn.hguw.p1.openshiftapps.com/v2/models/wvi/infer
+>>>>>>> 6999dcc0bfb33bc9b942aabfdf86529af912d2c4
