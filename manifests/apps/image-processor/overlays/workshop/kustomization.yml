@@ -14,4 +14,4 @@ patchesJson6902:
     patch: |-
       - op: replace
         path: /data/INFER_URL
-        value: PASTE_URL_HERE
+        value: https://wvi-windy-journey.apps.cluster-mmcf2.sandbox3023.opentlc.com/v2/models/wvi/infer
