@@ -6,4 +6,4 @@ metadata:
     app: windy-journey-ui
     app.kubernetes.io/part-of: windy-journey
 data:
-  config: {}
+  config: ''
