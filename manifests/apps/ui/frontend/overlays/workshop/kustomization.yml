@@ -14,4 +14,4 @@ patchesJson6902:
     patch: |-
       - op: replace
         path: /data/config
-        value: API_URL=http://windy-journey-backend-windy-journey.apps.rosa-ptcdn.hguw.p1.openshiftapps.com
+        value: BRAND_NAME=Windy Journey - Visual Inspection

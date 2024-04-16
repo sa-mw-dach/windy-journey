@@ -22,7 +22,7 @@ spec:
       automountServiceAccountToken: true
       containers:
         - name: windy-journey-ui
-          image: quay.io/wvi/ui-frontend:1.0.0
+          image: quay.io/wvi/ui-frontend:1.2.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
