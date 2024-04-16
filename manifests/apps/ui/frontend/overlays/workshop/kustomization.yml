@@ -21,7 +21,7 @@ patchesJson6902:
       name: windy-journey-ui
     patch: |-
       - op: add
-        path: /spec
+        path: /spec/
         value:
           tls:
             termination: edge
