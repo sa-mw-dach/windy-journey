@@ -15,3 +15,14 @@ patchesJson6902:
       - op: replace
         path: /data/config
         value: BRAND_NAME=Windy Journey - Visual Inspection
+  - target:
+      version: v1
+      kind: Route
+      name: windy-journey-ui
+    patch: |-
+      - op: add
+        path: /spec
+        value:
+          tls:
+            termination: edge
+            insecureEdgeTerminationPolicy: Redirect
