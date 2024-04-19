@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: windy-journey
 
 resources:
-  - config-map.yaml
+  - job-create-windy-journey-frontend-cm.yaml
   - service.yaml
   - route.yaml
   - service-account.yaml

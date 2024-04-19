@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: create-infer-url-cm
+  name: create-windy-journey-frontend-cm
   labels:
     app.kubernetes.io/part-of: windy-journey
   annotations:
@@ -15,29 +15,34 @@ spec:
         - args:
             - -ec
             - |-
-              INFER_URL=https://$(oc get route/model -o jsonpath={.spec.host})$(oc get route/model -o jsonpath={.spec.path})/infer
+              API_URL=https://$(oc get route/model -o jsonpath={.spec.host})
 
               cat << EOF | oc apply -f-
               apiVersion: v1
               kind: ConfigMap
               metadata:
-                name: image-processor-conf
+                name: windy-journey-ui-config
+                labels:
+                  app: windy-journey-ui
+                  app.kubernetes.io/part-of: windy-journey
               data:
-                INFER_URL: "${INFER_URL}"
+                config: >
+                  BRAND_NAME=Windy Journey - Visual Inspection
+                  API_URL=${API_URL}
               EOF
 
-              oc delete pods -l app=image-processor-00001
+              oc delete pods -l app=windy-journey-ui
           command:
             - /bin/bash
           image: image-registry.openshift-image-registry.svc:5000/openshift/tools:latest
           imagePullPolicy: IfNotPresent
-          name: create-infer-url-cm
+          name: create-windy-journey-frontend-cm
       initContainers:
         - args:
             - -ec
             - |-
-              echo -n 'Waiting for inference service route'
-              while ! oc get route model 2>/dev/null | grep -qF model; do
+              echo -n 'Waiting for ui backend route'
+              while ! oc get route windy-journey-backend 2>/dev/null | grep -qF windy-journey-backend; do
               echo -n .
               sleep 5
               done; echo
@@ -45,7 +50,7 @@ spec:
             - /bin/bash
           image: image-registry.openshift-image-registry.svc:5000/openshift/tools:latest
           imagePullPolicy: IfNotPresent
-          name: wait-for-inference-service-route
+          name: wait-for-windy-journey-backend-route
       restartPolicy: Never
       serviceAccount: demo-setup
       serviceAccountName: demo-setup
