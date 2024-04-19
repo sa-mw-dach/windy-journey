@@ -47,6 +47,11 @@ spec:
         repoURL: https://github.com/sa-mw-dach/windy-journey.git
         targetRevision: main
         path: manifests/apps/ui/backend/base
+      - cluster: in-cluster
+        name: rhods
+        repoURL: https://github.com/sa-mw-dach/windy-journey.git
+        targetRevision: main
+        path: manifests/apps/rhods
   template:
     metadata:
       name: '{{name}}'

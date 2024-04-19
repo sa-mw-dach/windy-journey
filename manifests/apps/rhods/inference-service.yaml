@@ -2,19 +2,20 @@ apiVersion: serving.kserve.io/v1beta1
 kind: InferenceService
 metadata:
   annotations:
-    openshift.io/display-name: wvi
+    openshift.io/display-name: wjvi
     serving.kserve.io/deploymentMode: ModelMesh
+    argocd.argoproj.io/sync-wave: "10"
   labels:
-    name: wvi
+    name: wjvi
     opendatahub.io/dashboard: "true"
-  name: wvi
+  name: wjvi
 spec:
   predictor:
     model:
       modelFormat:
         name: onnx
         version: "1"
-      runtime: wvi
+      runtime: wjvi
       storage:
-        key: aws-connection-wvi
-        path: wvi-best.onnx
+        key: aws-connection-wjvi
+        path: wjvi.onnx

@@ -1,0 +1,98 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: upload-model-to-minio-bucket
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  selector: {}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: minio
+        app.kubernetes.io/instance: minio
+        app.kubernetes.io/name: minio
+        app.kubernetes.io/part-of: minio
+        component: minio
+    spec:
+      containers:
+        - args:
+            - -ec
+            - |-
+              curl -LO  https://github.com/sa-mw-dach/windy-journey/releases/download/v0.0.0/wind-turbine-weights-best-2023_10_31.onnx
+
+              cat << 'EOF' | python3
+              import os
+
+              from boto3 import client
+
+              s3_endpoint_url = os.environ.get('AWS_S3_ENDPOINT')
+              s3_access_key = os.environ.get('AWS_ACCESS_KEY_ID')
+              s3_secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+              s3_bucket_name = os.environ.get('AWS_S3_BUCKET')  
+
+              def upload_model(src_file, target_object_name):
+                print(f'src_file: "{src_file}"')
+                print(f'target_object_name: "{target_object_name}"')      
+                      
+                s3_client = _initialize_s3_client(
+                  s3_endpoint_url=s3_endpoint_url,
+                  s3_access_key=s3_access_key,
+                  s3_secret_key=s3_secret_key
+                )
+                _do_upload(s3_client, src_file, target_object_name)
+
+
+              def _initialize_s3_client(s3_endpoint_url, s3_access_key, s3_secret_key):
+                print('initializing S3 client')
+                s3_client = client(
+                  's3', aws_access_key_id=s3_access_key,
+                  aws_secret_access_key=s3_secret_key,
+                  endpoint_url=s3_endpoint_url,
+                )
+                return s3_client
+
+
+              def _do_upload(s3_client, src_file, target_object_name):
+                print(f'uploading model to bucket {s3_bucket_name} as {target_object_name}')
+                
+                try:
+                  result = s3_client.list_objects_v2(Bucket=s3_bucket_name)
+                except:
+                  print(f'Bucket does not exist. Creating bucket {s3_bucket_name}')
+                  s3_client.create_bucket(Bucket=s3_bucket_name)
+                try:
+                  s3_client.upload_file(src_file, s3_bucket_name, target_object_name)
+                except:
+                  print(f'S3 upload to bucket {s3_bucket_name} at {s3_endpoint_url} failed!')
+                  raise
+                print(f'model uploaded and available as "{target_object_name}"')
+
+              upload_model('wind-turbine-weights-best-2023_10_31.onnx', 'wjvi.onnx')
+              EOF
+          command:
+            - /bin/bash
+          envFrom:
+            - secretRef:
+                name: aws-connection-wjvi
+          image: image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/tensorflow:2023.2
+          imagePullPolicy: IfNotPresent
+          name: upload-model-to-minio-bucket
+      initContainers:
+        - args:
+            - -ec
+            - |-
+              echo -n 'Waiting for aws connection secret'
+              while ! oc get secret aws-connection-wjvi 2>/dev/null | grep -qF minio-root-user; do
+              echo -n .
+              sleep 5
+              done; echo
+          command:
+            - /bin/bash
+          image: image-registry.openshift-image-registry.svc:5000/openshift/tools:latest
+          imagePullPolicy: IfNotPresent
+          name: wait-for-aws-connection-secret
+      restartPolicy: Never
+      serviceAccount: demo-setup
+      serviceAccountName: demo-setup

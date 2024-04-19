@@ -39,10 +39,6 @@ def _do_upload(s3_client, src_file, target_object_name):
     except:
       print(f'Bucket does not exist. Creating bucket {s3_bucket_name}')
       s3_client.create_bucket(Bucket=s3_bucket_name)
-
-    
-    
-    
     try:
         s3_client.upload_file(src_file, s3_bucket_name, target_object_name)
     except:

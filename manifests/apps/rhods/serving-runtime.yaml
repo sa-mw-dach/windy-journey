@@ -3,10 +3,11 @@ kind: ServingRuntime
 metadata:
   annotations:
     enable-route: "true"
+    argocd.argoproj.io/sync-wave: "5"
   labels:
-    name: model-server-wvi
+    name: model-server-wjvi
     opendatahub.io/dashboard: "true"
-  name: wvi
+  name: wjvi
 spec:
   builtInAdapter:
     memBufferBytes: 134217728
