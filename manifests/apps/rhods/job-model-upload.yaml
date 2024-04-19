@@ -1,3 +1,21 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: demo-setup
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: demo-setup-edit
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+subjects:
+  - kind: ServiceAccount
+    name: demo-setup
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -84,7 +102,7 @@ spec:
             - -ec
             - |-
               echo -n 'Waiting for aws connection secret'
-              while ! oc get secret aws-connection-wjvi 2>/dev/null | grep -qF minio-root-user; do
+              while ! oc get secret aws-connection-wjvi 2>/dev/null | grep -qF aws-connection-wjvi; do
               echo -n .
               sleep 5
               done; echo
