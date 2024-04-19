@@ -46,7 +46,7 @@ spec:
         name: ui-backend
         repoURL: https://github.com/sa-mw-dach/windy-journey.git
         targetRevision: main
-        path: manifests/apps/ui/backend/base
+        path: manifests/apps/ui/backend/overlays/workshop
       - cluster: in-cluster
         name: rhods
         repoURL: https://github.com/sa-mw-dach/windy-journey.git
