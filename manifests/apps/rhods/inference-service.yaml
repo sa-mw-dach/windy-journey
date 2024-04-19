@@ -2,13 +2,13 @@ apiVersion: serving.kserve.io/v1beta1
 kind: InferenceService
 metadata:
   annotations:
-    openshift.io/display-name: wjvi
+    openshift.io/display-name: model
     serving.kserve.io/deploymentMode: ModelMesh
     argocd.argoproj.io/sync-wave: "10"
   labels:
-    name: wjvi
+    name: model
     opendatahub.io/dashboard: "true"
-  name: wjvi
+  name: model
 spec:
   predictor:
     model:
