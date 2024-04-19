@@ -22,7 +22,7 @@ spec:
       automountServiceAccountToken: true
       containers:
         - name: windy-journey-backend
-          image: quay.io/wvi/ui-backend:1.0.1
+          image: quay.io/wvi/ui-backend:1.0.5
           ports:
             - containerPort: 8080
               protocol: TCP
