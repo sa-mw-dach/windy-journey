@@ -4,6 +4,8 @@ kind: Kustomization
 namespace: windy-journey
 
 resources:
+  - sa-demo.yaml
+  
   - secret-aws-connection.yaml
 
   - job-model-upload.yaml

@@ -8,4 +8,4 @@ resources:
   - knative-kafka-source.yaml
   - knative-trigger.yaml
   - knative-service.yaml
-  - config-map.yaml
+  # - config-map.yaml
