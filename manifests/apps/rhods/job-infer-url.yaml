@@ -23,8 +23,10 @@ spec:
               metadata:
                 name: image-processor-conf
               data:
-                INFER_URL: ${INFER_URL}
+                INFER_URL: "${INFER_URL}"
               EOF
+
+              oc delete pods -l app=image-processor-00001
           command:
             - /bin/bash
           image: image-registry.openshift-image-registry.svc:5000/openshift/tools:latest
