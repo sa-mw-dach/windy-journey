@@ -2,6 +2,8 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: create-infer-url-cm
+  labels:
+    app.kubernetes.io/part-of: windy-journey
   annotations:
     argocd.argoproj.io/hook: PostSync
     argocd.argoproj.io/sync-wave: "1"
@@ -13,7 +15,7 @@ spec:
         - args:
             - -ec
             - |-
-              INFER_URL=$(oc get route/model -o jsonpath={.spec.host})$(oc get route/model -o jsonpath={.spec.path})
+              INFER_URL=https://$(oc get route/model -o jsonpath={.spec.host})$(oc get route/model -o jsonpath={.spec.path})
 
               cat << EOF | oc apply -f-
               apiVersion: v1
