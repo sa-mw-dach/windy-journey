@@ -23,7 +23,7 @@ spec:
     - --grpc_bind_address=127.0.0.1
     - --rest_bind_address=127.0.0.1
     image: registry.redhat.io/rhods/odh-openvino-servingruntime-rhel8@sha256:ff1a2fa6336793ecbf68aabac021df2fbe0f37e7c37675a17b92819b64b9abb4
-    name: ovms
+    name: wjvi
     resources:
       limits:
         cpu: "2"
