@@ -15,7 +15,7 @@ spec:
         - args:
             - -ec
             - |-
-              API_URL=https://$(oc get route/model -o jsonpath={.spec.host})
+              API_URL=https://$(oc get route/windy-journey-backend -o jsonpath={.spec.host})
 
               cat << EOF | oc apply -f-
               apiVersion: v1
