@@ -26,7 +26,7 @@ spec:
                   app: windy-journey-ui
                   app.kubernetes.io/part-of: windy-journey
               data:
-                config: >
+                config: |-
                   BRAND_NAME=Windy Journey - Visual Inspection
                   API_URL=${API_URL}
               EOF
