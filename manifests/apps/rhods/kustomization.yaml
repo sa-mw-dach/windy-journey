@@ -13,4 +13,4 @@ resources:
   - serving-runtime.yaml
   - inference-service.yaml
 
-  - job-infer-url.yaml
+  - job-create-image-processor-cm.yaml
