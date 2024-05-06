@@ -7,7 +7,7 @@ metadata:
   namespace: windy-journey
 spec:
   partitions: 5
-  replicas: 2
+  replicas: 3
   config:
     retention.ms: 60000
     segment.bytes: 1073741824
