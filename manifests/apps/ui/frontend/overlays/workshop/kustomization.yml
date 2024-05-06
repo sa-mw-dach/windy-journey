@@ -9,14 +9,6 @@ bases:
 patchesJson6902:
   - target:
       version: v1
-      kind: ConfigMap
-      name: windy-journey-ui-config
-    patch: |-
-      - op: replace
-        path: /data/config
-        value: BRAND_NAME=Windy Journey - Visual Inspection
-  - target:
-      version: v1
       kind: Route
       name: windy-journey-ui
     patch: |-
